@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Projet développement</title>
+    </head>
+
+    <body>
+        <h1>Robot OL2</h1>
+
+        <img src="http://192.168.0.220:8090/?action=stream" />
+
+        <p>Commande moteurs côté droit : </p>
+        <input id="moteursCoteDroit" type="range" min="-100" max="100" value="0" step="10" onchange="updateValue(this.value, this.id)"/>
+        Valeur :
+        <span id="rangeCoteDroit">0</span>
+
+        <br><br>
+
+        <p>Commande moteurs côté gauche : </p>
+        <input id="moteursCoteGauche" type="range" min="-100" max="100" value="0" step="10" onchange="updateValue(this.value, this.id)"/>
+        Valeur :
+        <span id="rangeCoteGauche">0</span>
+
+        <button onclick="motors();">Valider</button>
+
+        <br><br>
+
+        <p>Position caméra haut / bas : </p>
+        <input id="cameraHautBas" type="range" min="-100" max="100" value="0" step="10" onchange="updateValue(this.value, this.id)"/>
+        Valeur :
+        <span id="rangeHautBas">0</span>
+
+        <br><br>
+
+        <p>Commande caméra droite / gauche : </p>
+        <input id="cameraDroiteGauche" type="range" min="-100" max="100" value="0" step="10" onchange="updateValue(this.value, this.id)"/>
+        Valeur :
+        <span id="rangeDroiteGauche">0</span>
+
+        <button onclick="camera();">Valider</button>
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            var socket = io.connect('http://192.168.0.220:3000');
+
+            var valueMotorsRightSide = 0;
+            var valueMotorsLeftSide = 0;
+            var valueCamUpDown = 0;
+            var valueCamRightLeft = 0;
+
+            function updateValue(newValue, id) {
+  				if (id == "moteursCoteDroit") {
+    				document.getElementById("rangeCoteDroit").innerHTML = newValue;
+    				valueMotorsRightSide = newValue;
+  				}
+  				else if (id == "moteursCoteGauche") {
+    				document.getElementById("rangeCoteGauche").innerHTML = newValue;
+    				valueMotorsLeftSide = newValue;
+  				}
+  				else if (id == "cameraHautBas") {
+    				document.getElementById("rangeHautBas").innerHTML = newValue;
+    				valueCamUpDown = newValue;
+  				}
+  				else if (id == "cameraDroiteGauche") {
+    				document.getElementById("rangeDroiteGauche").innerHTML = newValue;
+    				valueCamRightLeft = newValue;
+  				}
+			}
+
+			function motors() {
+				socket.emit('motors', valueMotorsRightSide, valueMotorsLeftSide);
+			}
+			function camera() {
+				socket.emit('camera', valueCamUpDown, valueCamRightLeft);
+			}
+
+        </script>
+    </body>
+</html>

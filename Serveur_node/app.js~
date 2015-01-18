@@ -1,0 +1,41 @@
+var http = require('http');
+var fs = require('fs');
+var sys = require('sys')
+var exec = require('child_process').exec;
+var i2c = require('i2c');
+
+// Chargement du fichier index.html affiché au client
+var server = http.createServer(function(req, res) {
+    fs.readFile('./index.html', 'utf-8', function(error, content) {
+        res.writeHead(200, {"Content-Type": "text/html"});
+        res.end(content);
+    });
+});
+
+// Chargement de socket.io
+var io = require('socket.io').listen(server);
+
+function puts(error, stdout, stderr) {sys.puts(stdout)}
+
+io.sockets.on('connection', function (socket) {
+
+  console.log('Un client est connecté');
+
+  socket.on('motors', function(rightSide, leftSide) {
+
+    cmd = 'python commandRobot.py ' + rightSide + ' ' + leftSide;
+
+	  exec(cmd, puts);
+  });
+
+  socket.on('camera', function(upDown, rightLeft) {
+
+    cmd = 'python commandCamera.py ' + upDown + ' ' + rightLeft;
+
+	  exec(cmd, puts);
+  });
+
+});
+
+
+server.listen(3000);
