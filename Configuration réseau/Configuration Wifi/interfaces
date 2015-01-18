@@ -1,0 +1,19 @@
+auto lo
+
+iface lo inet loopback
+
+auto eth0
+allow-hotplug eth0
+iface eth0 inet static
+	address 203.0.113.220
+	netmask 255.255.255.0
+
+auto wlan0
+allow-hotplug wlan0
+iface wlan0 inet static
+	address 192.168.0.220
+	netmask 255.255.255.0
+	wireless-channel 4
+	wireless-essid OL2-WIFI
+	wireless-mode ad-hoc
+	wireless-key 7383517392

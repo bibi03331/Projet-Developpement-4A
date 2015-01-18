@@ -1,0 +1,20 @@
+#! /bin/sh
+# /etc/init.d/test
+#
+touch /var/lock/test
+ 
+case "$1" in
+  start)
+    echo "Demarrage du serveur"
+    sudo node /home/pi/Serveur_node_v3/app.js &
+    sudo mjpg_streamer -i "/usr/lib/input_uvc.so -d /dev/video0  -r 640x480 -f 25" -o "/usr/lib/output_http.so -p 8090 -w /home/pi/code/mjpg-streamer/www" &
+    ;;
+  stop)
+    echo "Arret du serveur"
+    ;;
+  *)
+    echo "Usage: /etc/init.d/OL2 {start|stop}"
+    exit 1
+    ;;
+esac
+exit 0
